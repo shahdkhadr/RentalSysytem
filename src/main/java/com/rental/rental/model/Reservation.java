@@ -29,8 +29,11 @@ public class Reservation {
     private String status;
     private String additionalServices;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private List<Customer> customers;
+
+    @ManyToOne
+    @JoinColumn(name = "customerId", nullable = false)
+    private Customer customer;
+
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     private List<Branch> branches;
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)

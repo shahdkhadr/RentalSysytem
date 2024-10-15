@@ -26,8 +26,8 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Notification> notifications;
-    @ManyToOne
-    @JoinColumn(name = "reservationId", nullable = false)
-    private Reservation reservation;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Reservation> reservation;
 
 }

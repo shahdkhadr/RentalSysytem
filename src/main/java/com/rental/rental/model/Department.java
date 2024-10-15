@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -20,7 +22,7 @@ public class Department {
     private String departmentName;
     private String departmentPosition;
 
-    @ManyToOne
-    @JoinColumn(name = "employeeId", nullable = false)
-    private Employee employee;
+
+    @OneToMany(mappedBy = "departments", cascade = CascadeType.ALL)
+    private List<Employee> employee;
 }
