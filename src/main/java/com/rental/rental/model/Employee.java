@@ -23,8 +23,9 @@ public class Employee {
     private String phoneNumber;
     private String employmentType;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<Department> departments;
+    @ManyToOne
+    @JoinColumn(name = "departmentId", nullable = false)
+    private Department departments;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<Invoice> invoices;
