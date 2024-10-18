@@ -23,6 +23,6 @@ public class Department {
     private String departmentPosition;
 
 
-    @OneToMany(mappedBy = "departments", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "departments", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Employee> employee;
 }
