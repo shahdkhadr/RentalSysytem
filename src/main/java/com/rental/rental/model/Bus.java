@@ -1,19 +1,12 @@
 package com.rental.rental.model;
 
+import com.rental.rental.model.Vehicle;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@SuperBuilder
+@DiscriminatorValue("BUS")
 public class Bus extends Vehicle {
-
     private int numOfSeats;
     private boolean hasWiFi;
 }
