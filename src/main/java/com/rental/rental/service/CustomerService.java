@@ -6,6 +6,7 @@ import com.rental.rental.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private ReservationService reservationService;
 
     public List<CustomerDTO> getAllCustomers(){
         return customerRepository.
@@ -51,7 +54,15 @@ public class CustomerService {
         customerRepository.delete(existingCustomer);
 
     }
-        private CustomerDTO convertToDTO(Customer customer){
+//    public List<ReservationDTO> getCustomerReservations(int customerId) {
+//        Customer customer = customerRepository.findById(customerId)
+//                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + customerId));
+//
+//        return customer.getReservation().stream()
+//                .map(reservation -> reservationService.convertToDTO(reservation))
+//                .collect(Collectors.toList());
+//    }
+    private CustomerDTO convertToDTO(Customer customer){
         return CustomerDTO.builder()
                 .customerId(customer.getCustomerId())
                 .customerName(customer.getCustomerName())

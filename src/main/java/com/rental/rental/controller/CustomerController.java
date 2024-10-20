@@ -43,5 +43,10 @@ public class CustomerController {
         return ResponseEntity.ok("Customer with ID " + customerId + " has been deleted successfully.");
     }
 
+//    @GetMapping("/customer/reservations")
+//    public ResponseEntity<List<Integer>> getCustomerReservations(@RequestParam int customerId) {
+//        List<Integer> reservationIds = customerService.getCustomerReservations(customerId);
+//        return ResponseEntity.ok(reservationIds);
+//    }
 
 }
