@@ -2,7 +2,6 @@ package com.rental.rental.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -10,12 +9,13 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
 public class Vehicle {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int vehicleId;

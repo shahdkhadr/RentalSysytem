@@ -47,5 +47,5 @@ public class Reservation {
             joinColumns = @JoinColumn(name = "reservation_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private Set<Service> services;
+    private Set<_Service> services;
 }

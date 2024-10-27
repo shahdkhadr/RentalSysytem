@@ -1,19 +1,12 @@
 package com.rental.rental.model;
 
+import com.rental.rental.model.Vehicle;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@SuperBuilder
+@DiscriminatorValue("TRUCK")
 public class Truck extends Vehicle {
-
     private int cargoCapacity;
     private int numOfAxles;
     private String trailerType;

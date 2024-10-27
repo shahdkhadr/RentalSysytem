@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,7 +26,7 @@ public class Customer {
     private String driverLicense;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private List<Notification> notifications;
+    private List<Notification> notifications ;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Reservation> reservation;
