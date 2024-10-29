@@ -22,7 +22,8 @@ public class Payment {
 
     private String paymentMethod;
     private Date paymentDate;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
     private double totalAmount;
 
     @OneToOne(mappedBy = "payment")
