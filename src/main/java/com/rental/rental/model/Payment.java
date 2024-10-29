@@ -31,7 +31,4 @@ public class Payment {
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL)
     private List<Branch> branches;
 
-    @OneToOne
-    @JoinColumn(name = "rentalId", referencedColumnName = "rentalId")
-    private Rental rental;
 }
