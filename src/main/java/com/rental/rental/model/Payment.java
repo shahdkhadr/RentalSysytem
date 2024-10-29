@@ -22,7 +22,8 @@ public class Payment {
 
     private String paymentMethod;
     private Date paymentDate;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
     private double totalAmount;
 
     @OneToOne(mappedBy = "payment")
@@ -31,7 +32,4 @@ public class Payment {
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL)
     private List<Branch> branches;
 
-    @OneToOne
-    @JoinColumn(name = "rentalId", referencedColumnName = "rentalId")
-    private Rental rental;
 }
