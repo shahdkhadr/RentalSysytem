@@ -40,4 +40,7 @@ public class PaymentDTO {
     @Schema(description = "The total amount of money", example = "3000")
     private double totalAmount;
 
+    @Schema(description = "The type of card being used for payment", example = "Stripe, PayPal")
+    private String cardType;
+
 }
