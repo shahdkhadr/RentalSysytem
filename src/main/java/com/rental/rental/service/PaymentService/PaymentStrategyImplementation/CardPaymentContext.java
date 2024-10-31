@@ -1,12 +1,12 @@
 package com.rental.rental.service.PaymentService.PaymentStrategyImplementation;
 
 import com.rental.rental.dto.PaymentDTO;
-import com.rental.rental.service.PaymentService.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CardPaymentContext implements PaymentStrategy {
+
     @Autowired
     private StripePayment stripePayment;
 
@@ -24,4 +24,3 @@ public class CardPaymentContext implements PaymentStrategy {
         }
     }
 }
-
