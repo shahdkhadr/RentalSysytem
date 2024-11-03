@@ -25,6 +25,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
     private double totalAmount;
+    private String cardType;
 
     @OneToOne(mappedBy = "payment")
     private Invoice invoice;

@@ -75,13 +75,6 @@ public class PaymentService {
         // Update payment status based on processing result
         payment.setStatus(isSuccess ? PaymentStatus.COMPLETED : PaymentStatus.FAILED);
 
-        System.out.println("----------+++");
-
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println("----------");
         paymentRepository.save(payment);
 
         if (isSuccess) {
@@ -144,6 +137,7 @@ public class PaymentService {
                 .paymentDate(payment.getPaymentDate())
                 .status(payment.getStatus())
                 .totalAmount(payment.getTotalAmount())
+                .cardType(payment.getCardType())
                 .build();
     }
 
@@ -154,6 +148,7 @@ public class PaymentService {
                 .paymentDate(paymentDTO.getPaymentDate())
                 .status(paymentDTO.getStatus())
                 .totalAmount(paymentDTO.getTotalAmount())
+                .cardType(paymentDTO.getCardType())
                 .build();
 
     }

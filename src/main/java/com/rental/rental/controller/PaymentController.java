@@ -35,20 +35,14 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.getAllPayments());
     }
 
-    // Updated `processPayment` method using CardPaymentContext for Stripe and PayPal
-    @PostMapping("/process")
-    @Operation(summary = "Process a payment", description = "Process a payment using Stripe or PayPal based on the card type")
-    public ResponseEntity<Map<String, String>> processPayment(@RequestBody PaymentDTO paymentDTO) {
-        boolean paymentStatus = cardPaymentContext.pay(paymentDTO);
-        Map<String, String> response = new HashMap<>();
 
-        if (paymentStatus) {
-            response.put("message", "Payment processed successfully");
-            return ResponseEntity.ok(response);
-        } else {
-            response.put("message", "Payment failed");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    @PostMapping("/process")
+    @Operation(summary = "Process a payment", description = "Process a payment using on Arrival or card with Stripe or PayPal based on the card type")
+    public ResponseEntity<Map<String, String>> processPayment(@RequestBody PaymentDTO paymentDTO) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", paymentService.processPayment(paymentDTO));
+        return ResponseEntity.ok(response);
+
     }
 
     @GetMapping("/payment/{paymentId}")
