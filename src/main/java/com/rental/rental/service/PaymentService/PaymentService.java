@@ -56,10 +56,8 @@ public class PaymentService {
         PaymentStrategy paymentStrategy = paymentFactoryService.getPaymentService(paymentDTO);
 
         if (paymentStrategy == null) {
-            System.out.println("No payment strategy found for this payment type.");
             payment.setStatus(PaymentStatus.FAILED);
             paymentRepository.save(payment);
-            System.out.println("Payment failed");
             return "Payment Failed";
         }
 
