@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +21,4 @@ public class ServiceDTO {
 
     @NotNull(message = "The service cost is required")
     private double serviceCost;
-
-    private Set<Integer> reservationIds;
 }

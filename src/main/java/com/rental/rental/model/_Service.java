@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -21,7 +19,4 @@ public class _Service {
 
     private String serviceName;
     private double serviceCost;
-
-    @ManyToMany(mappedBy = "services")
-    private Set<Reservation> reservations;
 }

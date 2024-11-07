@@ -70,7 +70,6 @@ public class DepartmentService {
                 department.getDepartmentPosition()
         );
     }
-
     private Department convertToEntity(DepartmentDTO departmentDTO) {
         return Department.builder()
                 .departmentId(departmentDTO.getDepartmentId())
