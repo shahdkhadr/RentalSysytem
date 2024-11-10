@@ -1,5 +1,6 @@
 package com.rental.rental.model;
 
+import com.rental.rental.dto.VehicleDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "dtype")
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

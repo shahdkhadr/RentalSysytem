@@ -1,7 +1,7 @@
 package com.rental.rental.service;
 
 import com.rental.rental.dto.VehicleDTO;
-import com.rental.rental.model.Vehicle;
+import com.rental.rental.model.*;
 import com.rental.rental.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,10 +29,26 @@ public class VehicleService {
     }
 
     public VehicleDTO createVehicle(VehicleDTO vehicleDTO) {
-        Vehicle vehicle = convertToEntity(vehicleDTO);
+        Vehicle vehicle;
+        if (vehicleDTO.getDtype().equals("CAR")) {
+            vehicle = new Car();
+        } else if (vehicleDTO.getDtype().equals("VAN")) {
+            vehicle = new Van();
+        } else if (vehicleDTO.getDtype().equals("TRUCK")) {
+            vehicle = new Truck();
+        } else if (vehicleDTO.getDtype().equals("MOTOR")) {
+            vehicle = new Motor();
+        } else if (vehicleDTO.getDtype().equals("BUS")) {
+            vehicle = new Bus();
+        }
+        else {
+            vehicle = new Vehicle(); // Or handle this as an error case
+        }
+        vehicle = convertToEntity(vehicleDTO); // Populate other fields
         Vehicle savedVehicle = vehicleRepository.save(vehicle);
         return convertToDTO(savedVehicle);
     }
+
 
     public VehicleDTO updateVehicle(int vehicleId, VehicleDTO vehicleDTO) {
         Vehicle existingVehicle = vehicleRepository.findById(vehicleId)
@@ -83,20 +99,46 @@ public class VehicleService {
                 .build();
     }
 
-    private Vehicle convertToEntity(VehicleDTO vehicleDTO) {
-        return Vehicle.builder()
-                .vehicleId(vehicleDTO.getVehicleId())
-                .vehicleName(vehicleDTO.getVehicleName())
-                .vehicleStatus(vehicleDTO.getVehicleStatus())
-                .fuelType(vehicleDTO.getFuelType())
-                .engineCapacity(vehicleDTO.getEngineCapacity())
-                .hasAirConditioning(vehicleDTO.isHasAirConditioning())
-                .model(vehicleDTO.getModel())
-                .manufacturer(vehicleDTO.getManufacturer())
-                .plateNumber(vehicleDTO.getPlateNumber())
-                .longitude(vehicleDTO.getLongitude())
-                .latitude(vehicleDTO.getLatitude())
-                .dtype(Vehicle.VehicleType.valueOf(vehicleDTO.getDtype().name())) // Convert VehicleDTO.VehicleType to Vehicle.VehicleType
-                .build();
+    public Vehicle convertToEntity(VehicleDTO vehicleDTO) {
+        Vehicle vehicle;
+
+        // Determine which subclass of Vehicle to instantiate based on dtype
+        switch (vehicleDTO.getDtype().name()) {
+            case "CAR":
+                vehicle = new Car();
+                break;
+            case "VAN":
+                vehicle = new Van();
+                break;
+            case "BUS":
+                vehicle = new Bus();
+                break;
+            case "TRUCK":
+                vehicle = new Truck();
+                break;
+            case "MOTOR":
+                vehicle = new Motor();
+                break;
+            // Add other cases as needed for different vehicle types
+            default:
+                vehicle = new Vehicle(); // Fallback to base class if dtype is unknown
+        }
+
+        // Set common properties from vehicleDTO to vehicle
+        vehicle.setVehicleId(vehicleDTO.getVehicleId());
+        vehicle.setEngineCapacity(vehicleDTO.getEngineCapacity());
+        vehicle.setFuelType(vehicleDTO.getFuelType());
+        vehicle.setHasAirConditioning(vehicleDTO.isHasAirConditioning());
+        vehicle.setLatitude(vehicleDTO.getLatitude());
+        vehicle.setLongitude(vehicleDTO.getLongitude());
+        vehicle.setManufacturer(vehicleDTO.getManufacturer());
+        vehicle.setModel(vehicleDTO.getModel());
+        vehicle.setPlateNumber(vehicleDTO.getPlateNumber());
+        vehicle.setVehicleName(vehicleDTO.getVehicleName());
+        vehicle.setVehicleStatus(vehicleDTO.getVehicleStatus());
+        vehicle.setDtype(Vehicle.VehicleType.valueOf(vehicleDTO.getDtype().name()));
+
+        return vehicle;
     }
+
 }
