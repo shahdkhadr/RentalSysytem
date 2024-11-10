@@ -42,8 +42,16 @@ public class PaymentController {
     @Operation(summary = "Process a payment", description = "Process a payment using on Arrival or card with Stripe or PayPal based on the card type")
     public ResponseEntity<Map<String, String>> processPayment(@RequestBody PaymentDTO paymentDTO) {
         Map<String, String> response = new HashMap<>();
-        response.put("message", paymentService.processPayment(paymentDTO));
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        String resultMessage = paymentService.processPayment(paymentDTO);
+
+        if (resultMessage.equals("Payment processed successfully")) {
+            response.put("message", resultMessage);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } else {
+            response.put("message", resultMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
 
     }
 

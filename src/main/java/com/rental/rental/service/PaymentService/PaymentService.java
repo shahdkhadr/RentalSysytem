@@ -78,7 +78,7 @@ public class PaymentService {
         if (isSuccess) {
             return "Payment processed successfully";
         } else {
-            return "Payment failed";
+            return "Payment Failed";
         }
     }
 
