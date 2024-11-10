@@ -30,7 +30,9 @@ public class Vehicle {
     private String plateNumber;
     private double longitude;
     private double latitude;
-
+    @Enumerated(EnumType.STRING)
+    @Column(insertable = false, updatable = false)
+    private VehicleType dtype;
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     private List<VehicleCheck> vehicleChecks;
 
@@ -44,4 +46,11 @@ public class Vehicle {
     @ManyToOne
     @JoinColumn(name = "reservationId")
     private Reservation reservation;
+    public enum VehicleType {
+        MOTOR,
+        CAR,
+        TRUCK,
+        VAN,
+        BUS
+    }
 }
