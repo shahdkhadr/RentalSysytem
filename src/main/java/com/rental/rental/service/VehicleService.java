@@ -79,6 +79,12 @@ public class VehicleService {
     }
 
     private VehicleDTO convertToDTO(Vehicle vehicle) {
+        Integer reservationId = null;
+        if (vehicle.getReservations() != null && !vehicle.getReservations().isEmpty()) {
+            // If reservations exist, use the reservationId of the first reservation
+            reservationId = vehicle.getReservations().get(0).getReservationId();
+        }
+
         return VehicleDTO.builder()
                 .vehicleId(vehicle.getVehicleId())
                 .vehicleName(vehicle.getVehicleName())
@@ -91,13 +97,14 @@ public class VehicleService {
                 .plateNumber(vehicle.getPlateNumber())
                 .longitude(vehicle.getLongitude())
                 .latitude(vehicle.getLatitude())
-                .dtype(VehicleDTO.VehicleType.valueOf(vehicle.getDtype().name())) // Convert Vehicle.VehicleType to VehicleDTO.VehicleType
+                .dtype(VehicleDTO.VehicleType.valueOf(vehicle.getDtype().name()))  // Convert Vehicle.VehicleType to VehicleDTO.VehicleType
                 .rentalId(vehicle.getRental() != null ? vehicle.getRental().getRentalId() : null)
-                .reservationId(vehicle.getReservation() != null ? vehicle.getReservation().getReservationId() : null)
+                .reservationId(reservationId)  // Set the first reservation's ID, if available
                 .stallId(vehicle.getParkingStall() != null ? vehicle.getParkingStall().getStallId() : null)
-                //.vehicleCheckIds(vehicle.getVehicleChecks().stream().map(vehicleCheck -> vehicleCheck.getVehicleCheckId()).collect(Collectors.toList()))
+                //.vehicleCheckIds(vehicle.getVehicleChecks() != null ? vehicle.getVehicleChecks().stream().map(VehicleCheck::getVehicleCheckId).collect(Collectors.toList()) : null)
                 .build();
     }
+
 
     public Vehicle convertToEntity(VehicleDTO vehicleDTO) {
         Vehicle vehicle;
@@ -119,9 +126,9 @@ public class VehicleService {
             case "MOTOR":
                 vehicle = new Motor();
                 break;
-            // Add other cases as needed for different vehicle types
             default:
                 vehicle = new Vehicle(); // Fallback to base class if dtype is unknown
+                break;
         }
 
         // Set common properties from vehicleDTO to vehicle

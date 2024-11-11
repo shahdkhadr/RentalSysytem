@@ -36,8 +36,9 @@ public class Reservation {
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     private List<Branch> branches;
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private List<Vehicle> vehicles;
+    @ManyToOne
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
     private Rental rental;
 
