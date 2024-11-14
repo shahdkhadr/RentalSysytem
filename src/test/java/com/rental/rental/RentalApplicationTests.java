@@ -8,8 +8,9 @@ import com.rental.rental.service.PaymentServiceUnitTests;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.SelectPackages;
 import org.junit.platform.suite.api.Suite;
+import org.springframework.test.context.ActiveProfiles;
 
-
+@ActiveProfiles("test")
 @Suite
 @SelectPackages({"com.rental.rental.controller", "com.rental.rental.service", "com.rental.rental.repository"})
 @SelectClasses({
