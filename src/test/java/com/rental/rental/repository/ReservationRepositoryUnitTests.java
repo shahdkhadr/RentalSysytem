@@ -147,7 +147,6 @@ public class ReservationRepositoryUnitTests {
         // Assert that only one reservation was successfully created
         org.assertj.core.api.Assertions.assertThat(successCount).isEqualTo(1);
 
-        // Shut down the executor
         executor.shutdown();
     }
 
