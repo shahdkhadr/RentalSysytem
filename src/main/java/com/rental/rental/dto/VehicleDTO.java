@@ -48,10 +48,19 @@ public class VehicleDTO {
     @DecimalMax(value = "90.0", message = "Latitude must be between -90 and 90")
     private double latitude;
 
+    private VehicleType dtype; // Enum for VehicleType
 
     private Integer rentalId;
     private Integer reservationId;
     private Integer stallId;
 
     private List<Integer> vehicleCheckIds;
+
+    public enum VehicleType {
+        MOTOR,
+        CAR,
+        TRUCK,
+        VAN,
+        BUS
+    }
 }

@@ -62,25 +62,26 @@ public class CustomerService {
 //                .map(reservation -> reservationService.convertToDTO(reservation))
 //                .collect(Collectors.toList());
 //    }
-    private CustomerDTO convertToDTO(Customer customer){
-        return CustomerDTO.builder()
-                .customerId(customer.getCustomerId())
-                .customerName(customer.getCustomerName())
-                .customerAddress(customer.getCustomerAddress())
-                .phoneNumber(customer.getPhoneNumber())
-                .driverLicense(customer.getDriverLicense())
-                .notificationIds(customer.getNotifications() != null
-                        ? customer.getNotifications().stream()
-                        .map(notification -> notification.getNotificationId())
-                        .collect(Collectors.toList())
-                        : new ArrayList<>())
-                .reservationIds(customer.getReservation() != null
-                        ? customer.getReservation().stream()
-                        .map(reservation -> reservation.getReservationId())
-                        .collect(Collectors.toList())
-                        : new ArrayList<>())
-                .build();
-    }
+        private CustomerDTO convertToDTO(Customer customer) {
+            return CustomerDTO.builder()
+                    .customerId(customer.getCustomerId())
+                    .customerName(customer.getCustomerName())
+                    .customerAddress(customer.getCustomerAddress())
+                    .phoneNumber(customer.getPhoneNumber())
+                    .driverLicense(customer.getDriverLicense())
+                    .notificationIds(customer.getNotifications() != null
+                            ? customer.getNotifications().stream()
+                            .map(notification -> notification.getNotificationId())
+                            .collect(Collectors.toList())
+                            : new ArrayList<>())
+                    .reservationIds(customer.getReservations() != null
+                            ? customer.getReservations().stream()
+                            .map(reservation -> reservation.getReservationId())
+                            .collect(Collectors.toList())
+                            : new ArrayList<>())
+                    .build();
+        }
+
     private Customer convertToEntity(CustomerDTO customerDTO){
         Customer customer = Customer.builder()
                 .customerId(customerDTO.getCustomerId())

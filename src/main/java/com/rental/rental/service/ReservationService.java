@@ -5,6 +5,7 @@ import com.rental.rental.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -74,9 +75,7 @@ public class ReservationService {
                 .branchIds(reservation.getBranches().stream()
                         .map(branch -> branch.getBranchId())
                         .collect(Collectors.toList()))
-                .vehicleIds(reservation.getVehicles().stream()
-                        .map(vehicle -> vehicle.getVehicleId())
-                        .collect(Collectors.toList()))
+                .vehicleIds(Collections.singletonList(reservation.getVehicle().getVehicleId()))
                 .serviceIds(reservation.getServices().stream()
                         .map(service -> service.getServiceId())
                         .collect(Collectors.toSet()));
@@ -108,9 +107,10 @@ public class ReservationService {
         reservation.setBranches(branches);
 
         // Set Vehicles
-        List<Vehicle> vehicles = vehicleRepository.findAllById(reservationDTO.getVehicleIds());
-        reservation.setVehicles(vehicles);
-
+        List<Vehicle> vehicles = vehicleRepository.findAllById(reservationDTO.getVehicleIds());  // Getting the vehicle(s)
+        if (!vehicles.isEmpty()) {
+            reservation.setVehicle(vehicles.get(0));
+        }
         // Set Services
         Set<_Service> services = serviceRepository.findAllById(reservationDTO.getServiceIds())
                 .stream().collect(Collectors.toSet());

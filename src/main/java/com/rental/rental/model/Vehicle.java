@@ -1,20 +1,21 @@
 package com.rental.rental.model;
 
+import com.rental.rental.dto.VehicleDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "dtype")
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@Setter
+@Getter
 public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +31,9 @@ public class Vehicle {
     private String plateNumber;
     private double longitude;
     private double latitude;
-
+    @Enumerated(EnumType.STRING)
+    @Column(insertable = false, updatable = false)
+    private VehicleType dtype;
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     private List<VehicleCheck> vehicleChecks;
 
@@ -41,7 +44,13 @@ public class Vehicle {
     @JoinColumn(name = "rentalId")
     private Rental rental;
 
-    @ManyToOne
-    @JoinColumn(name = "reservationId")
-    private Reservation reservation;
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
+    public enum VehicleType {
+        MOTOR,
+        CAR,
+        TRUCK,
+        VAN,
+        BUS
+    }
 }
