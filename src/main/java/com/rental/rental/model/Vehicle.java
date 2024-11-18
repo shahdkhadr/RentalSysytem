@@ -17,6 +17,8 @@ import java.util.List;
 @Setter
 @Getter
 public class Vehicle {
+    @Version
+    private Long version;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int vehicleId;
