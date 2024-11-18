@@ -10,5 +10,11 @@ import java.util.Optional;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<Vehicle> findByVehicleId(int vehicleId);
+    @Query("SELECT v FROM Vehicle v WHERE v.vehicleId = :vehicleId")
+    Optional<Vehicle> findByVehicleIdWithLock(@Param("vehicleId") Integer vehicleId);
+
+
+
+
+
 }

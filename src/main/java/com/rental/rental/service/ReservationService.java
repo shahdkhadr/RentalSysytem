@@ -44,34 +44,32 @@ public class ReservationService {
     @Transactional
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
         try {
-            // Convert DTO to entity and lock the vehicle for update
+            System.out.println("Converting DTO to Reservation entity.");
             Reservation reservation = convertToEntity(reservationDTO);
 
-            // Retrieve and lock the vehicle to prevent concurrent reservation updates
-            Vehicle lockedVehicle = vehicleRepository.findByVehicleId(reservation.getVehicle().getVehicleId())
+            System.out.println("Fetching vehicle with lock.");
+            Vehicle lockedVehicle = vehicleRepository.findByVehicleIdWithLock(reservation.getVehicle().getVehicleId())
                     .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
 
-            // Check if the vehicle already has a confirmed reservation
+            System.out.println("Checking if the vehicle is already reserved.");
             if (reservationRepository.existsByVehicleAndStatus(lockedVehicle, "CONFIRMED")) {
+                System.out.println("Vehicle already reserved.");
                 throw new IllegalStateException("Vehicle already reserved.");
             }
 
-            // Save the reservation
+            System.out.println("Saving the reservation.");
             Reservation savedReservation = reservationRepository.save(reservation);
 
-            // Convert and return the saved reservation as DTO
+            System.out.println("Reservation saved successfully. ID: " + savedReservation.getReservationId());
             return convertToDTO(savedReservation);
 
-        } catch (OptimisticLockException e) {
-            // Handle concurrency conflicts due to version mismatch
-            System.out.println("Optimistic lock conflict: " + e.getMessage());
-            throw new IllegalStateException("Concurrent reservation attempt detected. Please try again.");
-        } catch (IllegalStateException e) {
-            // Log or handle any state conflicts, like duplicate reservations
-            System.out.println("Reservation conflict: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error in createReservation: " + e.getMessage());
             throw e;
         }
     }
+
+
 
     public void deleteReservation(int id) {
         Reservation reservation = reservationRepository.findById(id)
