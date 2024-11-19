@@ -8,6 +8,5 @@ import java.sql.Date;
 import java.util.Optional;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
-
-    Optional<Reservation> findByVehicleAndReservationStartDateLessThanEqualAndReservationEndDateGreaterThanEqual(
-            Vehicle vehicle, Date startDate, Date endDate);}
+    boolean existsByVehicleAndStatus(Vehicle vehicle, String status);
+}
