@@ -1,124 +1,125 @@
 package com.rental.rental.repository;
 
+import com.rental.rental.dto.ReservationDTO;
 import com.rental.rental.model.Customer;
-import com.rental.rental.model.Reservation;
-import com.rental.rental.model.Role;
-import com.rental.rental.model.RoleEnum;
 import com.rental.rental.model.Vehicle;
-import org.assertj.core.api.Assertions;
+import com.rental.rental.service.ReservationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.Collections;
+import java.util.Date;
+import java.util.concurrent.*;
 
-@DataJpaTest
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.*;
+
+@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class ReservationRepositoryUnitTests {
 
-    @Autowired
+    @MockBean
     private ReservationRepository reservationRepository;
 
-    @Autowired
-    private CustomerRepository customerRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
+    @MockBean
     private VehicleRepository vehicleRepository;
+
+    @MockBean
+    private ReservationService reservationService;
+
+    private Customer customer1, customer2;
+    private Vehicle vehicle;
 
     @BeforeEach
     public void setUp() {
-        createRoleIfNotExists(RoleEnum.USER, "Regular user with standard permissions");
-        createRoleIfNotExists(RoleEnum.ADMIN, "Administrator with elevated permissions");
-        createRoleIfNotExists(RoleEnum.SUPER_ADMIN, "Super user with full access");
-    }
+        customer1 = new Customer();
+        customer1.setCustomerId(1);
+        customer1.setCustomerName("John Doe");
 
-    private void createRoleIfNotExists(RoleEnum roleEnum, String description) {
-        if (roleRepository.findByName(roleEnum).isEmpty()) {
-            Role role = Role.builder()
-                    .name(roleEnum)
-                    .description(description)
-                    .build();
-            roleRepository.save(role);
-        }
+        customer2 = new Customer();
+        customer2.setCustomerId(2);
+        customer2.setCustomerName("Jane Smith");
+
+        vehicle = new Vehicle();
+        vehicle.setVehicleId(1);
+        vehicle.setVehicleName("Toyota Corolla");
+
+        when(vehicleRepository.findByVehicleIdWithLock(1)).thenReturn(java.util.Optional.of(vehicle));
+        when(reservationRepository.existsByVehicleAndStatus(vehicle, "CONFIRMED"))
+                .thenReturn(false)
+                .thenReturn(true);
     }
 
     @Test
-    public void testDoubleReservationForSameVehicle() {
-        // Fetch a role to associate with the customer
-        Optional<Role> userRoleOptional = roleRepository.findByName(RoleEnum.USER);
+    public void testConcurrentReservationRequests() throws InterruptedException, ExecutionException {
+        Date startDate = Date.from(LocalDate.now().atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(LocalDate.now().plusDays(1).atStartOfDay().atZone(java.time.ZoneId.systemDefault()).toInstant());
 
-        // Ensure the role is present
-        Assertions.assertThat(userRoleOptional).isPresent().withFailMessage("The USER role should exist in the database.");
-        Role userRole = userRoleOptional.get();
-
-        // Create and save a customer
-        Customer customer = Customer.builder()
-                .customerName("Jane Doe")
-                .email("janedoe@example.com")
-                .password("securePassword")
-                .customerAddress("456 Main St")
-                .phoneNumber("555-5678")
-                .driverLicense("D87654321")
-                .role(userRole) // Assign role to customer
-                .build();
-        Customer savedCustomer = customerRepository.save(customer);
-
-        // Create and save a vehicle for the reservation
-        Vehicle vehicle = new Vehicle();
-        vehicle.setManufacturer("Toyota");
-        vehicle.setModel("Corolla");
-        Vehicle savedVehicle = vehicleRepository.save(vehicle);
-
-        // Convert LocalDate to java.sql.Date for reservation dates
-        Date reservationStartDate = Date.valueOf(LocalDate.now());
-        Date reservationEndDate = Date.valueOf(LocalDate.now().plusDays(1));
-
-        // First reservation attempt
-        Reservation reservation1 = Reservation.builder()
-                .customer(savedCustomer)
-                .reservationStartDate(reservationStartDate)
-                .reservationEndDate(reservationEndDate)
+        ReservationDTO reservationDTO1 = ReservationDTO.builder()
+                .customerId(customer1.getCustomerId())
+                .vehicleIds(Collections.singletonList(vehicle.getVehicleId()))
+                .reservationStartDate(startDate)
+                .reservationEndDate(endDate)
                 .status("CONFIRMED")
-                .vehicle(savedVehicle)
                 .build();
-        Reservation savedReservation1 = reservationRepository.save(reservation1);
 
-        // Assert that the first reservation is saved correctly
-        Assertions.assertThat(savedReservation1).isNotNull().withFailMessage("The first reservation should be saved.");
-        Assertions.assertThat(savedReservation1.getReservationId()).isGreaterThan(0).withFailMessage("The first reservation should have a valid ID.");
-
-        // Second reservation attempt (same vehicle and same time)
-        Reservation reservation2 = Reservation.builder()
-                .customer(savedCustomer)
-                .reservationStartDate(reservationStartDate)
-                .reservationEndDate(reservationEndDate)
+        ReservationDTO reservationDTO2 = ReservationDTO.builder()
+                .customerId(customer2.getCustomerId())
+                .vehicleIds(Collections.singletonList(vehicle.getVehicleId()))
+                .reservationStartDate(startDate)
+                .reservationEndDate(endDate)
                 .status("CONFIRMED")
-                .vehicle(savedVehicle)
                 .build();
 
-        // Add logic to check if the vehicle is already reserved for the same time frame
-        // (This is just a mock check; you can implement it in your service layer)
-        Optional<Reservation> existingReservation = reservationRepository.findByVehicleAndReservationStartDateLessThanEqualAndReservationEndDateGreaterThanEqual(savedVehicle, reservationStartDate, reservationEndDate);
+        // Mock the service behavior for concurrent reservations
+        when(reservationService.createReservation(reservationDTO1)).thenReturn(reservationDTO1);
+        when(reservationService.createReservation(reservationDTO2)).thenThrow(new IllegalStateException("Vehicle already reserved."));
 
-        if (existingReservation.isEmpty()) {
-            // If no existing reservation, save the new reservation
-            reservationRepository.save(reservation2);
-            Assertions.assertThat(reservation2.getReservationId()).isGreaterThan(0)
-                    .withFailMessage("The second reservation should not be allowed.");
-        } else {
-            // If a conflict exists, ensure that the second reservation is not saved
-            Assertions.assertThat(existingReservation).isPresent()
-                    .withFailMessage("The second reservation should not be allowed due to a conflict.");
+        // Create a thread pool
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        // Define tasks
+        Callable<ReservationDTO> task1 = () -> reservationService.createReservation(reservationDTO1);
+        Callable<ReservationDTO> task2 = () -> reservationService.createReservation(reservationDTO2);
+
+        // Submit tasks
+        Future<ReservationDTO> result1 = executor.submit(task1);
+        Future<ReservationDTO> result2 = executor.submit(task2);
+
+        int successCount = 0;
+
+        try {
+            ReservationDTO res1 = result1.get();
+            assertNotNull(res1);
+            successCount++;
+            System.out.println("Reservation for Customer 1 (John Doe) succeeded.");
+        } catch (ExecutionException e) {
+            System.out.println("Reservation for Customer 1 (John Doe) failed: " + e.getCause());
         }
+
+        try {
+            result2.get();
+        } catch (ExecutionException e) {
+            assertTrue(e.getCause() instanceof IllegalStateException);
+            System.out.println("Reservation for Customer 2 (Jane Smith) failed: " + e.getCause());
+        }
+
+        // Assert that only one reservation was successful
+        System.out.println("Total successful reservations: " + successCount);
+        assertTrue(successCount == 1);
+
+        executor.shutdown();
     }
+
 }

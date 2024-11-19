@@ -2,13 +2,17 @@ package com.rental.rental.service;
 import com.rental.rental.dto.ReservationDTO;
 import com.rental.rental.model.*;
 import com.rental.rental.repository.*;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReservationService {
@@ -37,19 +41,41 @@ public class ReservationService {
                 .orElseThrow(() -> new RuntimeException("Reservation not found with id: " + id));
         return convertToDTO(reservation);
     }
-
+    @Transactional
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
-        Reservation reservation = convertToEntity(reservationDTO);
-        Reservation savedReservation = reservationRepository.save(reservation);
-        return convertToDTO(savedReservation);
+        try {
+            System.out.println("Converting DTO to Reservation entity.");
+            Reservation reservation = convertToEntity(reservationDTO);
+
+            System.out.println("Fetching vehicle with lock.");
+            Vehicle lockedVehicle = vehicleRepository.findByVehicleIdWithLock(reservation.getVehicle().getVehicleId())
+                    .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
+
+            System.out.println("Checking if the vehicle is already reserved.");
+            if (reservationRepository.existsByVehicleAndStatus(lockedVehicle, "CONFIRMED")) {
+                System.out.println("Vehicle already reserved.");
+                throw new IllegalStateException("Vehicle already reserved.");
+            }
+
+            System.out.println("Saving the reservation.");
+            Reservation savedReservation = reservationRepository.save(reservation);
+
+            System.out.println("Reservation saved successfully. ID: " + savedReservation.getReservationId());
+            return convertToDTO(savedReservation);
+
+        } catch (Exception e) {
+            System.out.println("Error in createReservation: " + e.getMessage());
+            throw e;
+        }
     }
+
+
 
     public void deleteReservation(int id) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reservation not found with id: " + id));
         reservationRepository.delete(reservation);
     }
-
 
     public ReservationDTO updateReservation(int id, ReservationDTO reservationDTO) {
         Reservation existingReservation = reservationRepository.findById(id)
