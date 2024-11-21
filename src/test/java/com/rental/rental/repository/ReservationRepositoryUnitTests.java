@@ -27,6 +27,7 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 public class ReservationRepositoryUnitTests {
 
     @MockBean
