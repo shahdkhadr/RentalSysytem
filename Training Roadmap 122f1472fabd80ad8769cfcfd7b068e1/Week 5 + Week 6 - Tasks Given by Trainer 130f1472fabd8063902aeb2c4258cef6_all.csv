@@ -1,0 +1,12 @@
+﻿Topic,References,Tag,Abdullah,Shahd,"Abdullah Status ",Shahd Status,Notes,Day
+Read about why is SQL Database is better for security than NoSQL & Why we use it in our project ?,"https://chatgpt.com/share/671de7c5-8a1c-8009-be3f-5ddda2ad4567. https://chatgpt.com/share/672296d0-e5f4-8006-84da-c0a893d2c220
+2. https://drive.google.com/file/d/15AP_hQPaWtQZVvDIf61HlC59-2B7Te4r/view
+3. https://chatgpt.com/share/67233050-d7e0-8006-85e9-cd11418c9749","ACID, BASE, CAP, NoSQL, SQL, Scaling, Sharding",Yes,Yes,Done,Done,Training%20Roadmap%20122f1472fabd80ad8769cfcfd7b068e1/SQL%20vs%20NoSQL%20130f1472fabd80699a2be27954a9c83f.md,"October 31, 2024"
+Jpa Repository Flush,1. https://chatgpt.com/share/67229bf4-0194-8006-9b0e-ebfa89f4d490,Flush,Yes,Yes,Done,Done,"1. Flushing pushes changes to the database immediately, achieving real-time synchronization.
+2. Commit makes these changes permanent in the database (ending the transaction).",
+Authentication & Authorization,"1. https://medium.com/@tericcabrel/implement-jwt-authentication-in-a-spring-boot-3-application-5839e4fd8fac
+2. https://medium.com/@tericcabrel/implement-role-based-access-control-in-spring-boot-3-a31c87c2be5c","Authentication, Authorization, JWT, Spring Boot Starter Dependencies",No,Yes,In progress,Done,,
+Build 1 Successful Payment Process with apply appropriate Design Patterns.,"1. https://chatgpt.com/share/672295cc-9f00-8006-8d18-896b796d0b6c
+2. https://medium.com/@sudhakarketha509/integrating-stripe-payment-with-spring-boot-2a49ed4f0134",Payment Successful Process,Yes,Yes,Done,Done,Training%20Roadmap%20122f1472fabd80ad8769cfcfd7b068e1/Success%20Payment%20Feature%20130f1472fabd8053859bd7848a73ca3c.md,
+Read about Unit Testing,1. https://medium.com/@Lakshitha_Fernando/spring-boot-unit-testing-for-repositories-controllers-and-services-using-junit-5-and-mockito-def3ff5891be,"JUnit 5, Mockito, Unit Testing",Yes,Yes,Done,Done,,
+Make Unit Testing for the successful payment process.,,,Yes,Yes,Done,Done,,
