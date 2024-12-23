@@ -1,1 +1,0 @@
-# Bean Life Cycle
